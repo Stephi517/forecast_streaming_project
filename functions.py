@@ -149,6 +149,6 @@ def make_wind_quiver(ds, step, xcoord, ycoord, stride=20):
         projection=ccrs.PlateCarree(),
         normalize=False,
         #magnitude="ws",
-        scale=0.1,
+        scale=1,
     )
     return vectors

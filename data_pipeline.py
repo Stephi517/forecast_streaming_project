@@ -8,14 +8,14 @@ silence(FIXED_SIZING_MODE)
 
 import time
 from functions import *
-from vizualize_forecasts import build_forecast_dashboard
+from visualize_forecasts import build_forecast_dashboard
 from data_store import ForecastStore
 
 client = Client("ecmwf", beta=False)
 filename = "ecmwf_fc.grib2"
 
 config_args = {
-    "step": list(range(0, 360, 6)),
+    "step": list(range(0, 168, 6)), #360
     "stream": "oper",
     "type": "fc",
     "levtype": "sfc",
