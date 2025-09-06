@@ -10,7 +10,7 @@ Built with:
 - [MET Norway Thredds](https://thredds.met.no/thredds/catalog/metpplatest/catalog.html) → regional forecasts (MEPS)
 
 ---
-## ⚙️ Installation
+## Installation
 
 ### 1. Clone the repository
 ```bash
