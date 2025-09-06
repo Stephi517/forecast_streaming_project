@@ -14,10 +14,11 @@ Built with:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/forecast-visualization.git
-cd forecast-visualization
-
+git clone https://github.com/Stephi517/forecast_streaming_project.git
+```
+create virtual environment
+```bash
 pip install -r requirements.txt
 
 python data_pipeline.py
-
+```
