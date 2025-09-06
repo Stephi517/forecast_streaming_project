@@ -10,14 +10,29 @@ Built with:
 - [MET Norway Thredds](https://thredds.met.no/thredds/catalog/metpplatest/catalog.html) → regional forecasts (MEPS)
 
 ---
-## ⚙️ Installation
+## Installation
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/forecast-visualization.git
-cd forecast-visualization
+git clone https://github.com/Stephi517/forecast_streaming_project.git
+```
+### 2. Create a virtual environment
 
+On macOS/Linux:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+On Windows:
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+### 3. Install requirements 
+```bash
 pip install -r requirements.txt
-
+```
+### 4. Run data_pipeline.py
+```bash
 python data_pipeline.py
-
+```
