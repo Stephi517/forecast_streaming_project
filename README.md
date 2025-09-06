@@ -16,7 +16,7 @@ Built with:
 ```bash
 git clone https://github.com/Stephi517/forecast_streaming_project.git
 ```
-2. Create a virtual environment
+### 2. Create a virtual environment
 
 On macOS/Linux:
 ```bash
@@ -28,11 +28,11 @@ On Windows:
 python -m venv .venv
 .venv\Scripts\activate
 ```
-3. Install requirements 
+### 3. Install requirements 
 ```bash
 pip install -r requirements.txt
 ```
-4. Run data_pipeline.py
+### 4. Run data_pipeline.py
 ```bash
 python data_pipeline.py
 ```
