@@ -33,6 +33,12 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 ### 4. Run data_pipeline.py
+run either:
 ```bash
 python data_pipeline.py
 ```
+or 
+```bash
+panel serve data_pipeline.py --autoreload --show
+```
+in environment and keep Terminal open to have the plots automatically updated
