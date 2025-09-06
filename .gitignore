@@ -206,4 +206,4 @@ cython_debug/
 __pycache__/
 *.pyc
 
-.grib2
+*.grib2
