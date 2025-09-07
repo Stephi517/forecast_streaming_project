@@ -1,12 +1,14 @@
 # visualize_last_forecast
 
-This project provides an interactive dashboard for visualizing **ECMWF** and **MEPS** weather forecasts.  
-It downloads the latest model runs, processes them into a consistent format, and renders maps of cloud cover, precipitation, wind, and temperature in your browser.
+This project provides a prototype of an interactive dashboard for visualizing **ECMWF** and **MEPS** weather forecasts.  
+It downloads the latest model runs, processes them and provides maps of cloud cover, precipitation, wind, and temperature in your browser.
 
-Built with:
+It uses:
 - [Panel](https://panel.holoviz.org/) & [Holoviews](https://holoviews.org/) → interactive visualization
 - [xarray](https://xarray.pydata.org/) → dataset handling
-- [ecmwf-opendata](https://github.com/ecmwf/ecmwf-opendata) → global forecast access
+
+Weather forecasts are fetched from:  
+- [ecmwf-opendata](https://github.com/ecmwf/ecmwf-opendata) → global forecast
 - [MET Norway Thredds](https://thredds.met.no/thredds/catalog/metpplatest/catalog.html) → regional forecasts (MEPS)
 
 ---
@@ -28,22 +30,24 @@ On Windows:
 python -m venv .venv
 .venv\Scripts\activate
 ```
+
 ### 3. Install requirements 
 ```bash
 pip install -r requirements.txt
 ```
 ### 4. Run data_pipeline.py
-run either:
+run:
 ```bash
-python data_pipeline.py
+python -m panel serve forecast_stream.py --show  
 ```
-or 
-```bash
-panel serve data_pipeline.py --autoreload --show
-```
-in environment and keep Terminal open to have the plots automatically updated
+in environment and keep terminal open to have the plots automatically updated
 
-python -m panel serve data_pipeline.py --show
-Don’t use --autoreload in production; only when you’re editing code.
+---
+## Project structure
 
-Then your scheduler will run exactly every 30 min.
+config.py -> provides the specifications of the ECMWF and MEPS download and the intervall times for update check-up
+data_store.py -> stores model forecast
+forecast_stream.py -> main file
+transform_functions.py -> contains functions that transform and modify the datasets
+update_functions.py -> contains functions that are to check for updated forecasts
+visualization.py -> builds the visualization dashboard
