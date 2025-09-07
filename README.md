@@ -46,8 +46,13 @@ in environment and keep terminal open to have the plots automatically updated
 ## Project structure
 
 config.py -> provides the specifications of the ECMWF and MEPS download and the intervall times for update check-up
+
 data_store.py -> stores model forecast
+
 forecast_stream.py -> main file
+
 transform_functions.py -> contains functions that transform and modify the datasets
+
 update_functions.py -> contains functions that are to check for updated forecasts
+
 visualization.py -> builds the visualization dashboard
