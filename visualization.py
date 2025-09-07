@@ -40,7 +40,7 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
                     x="lon",
                     y="lat",
                     geo=True,
-                    coastline="110m",
+                    coastline="50m",
                     rasterize=True,
                     project=True,
                     projection=ccrs.PlateCarree(),
@@ -91,22 +91,23 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
             forecast_reference_time = pd.to_datetime(ds.forecast_reference_time.values).strftime("%Y-%m-%d %H:%M UTC")
             forecast_valid_time = pd.to_datetime(ds.valid_time.sel(step=step).values).strftime("%Y-%m-%d %H:%M UTC")
 
-            title_pane = pn.pane.Markdown(f"## {name} Forecast valid time: {forecast_valid_time}", align="center")
-            subtitle_pane = pn.pane.Markdown(f"Forecast reference time: {forecast_reference_time}", align="start")
+            title_pane = pn.pane.Markdown(f"# Forecast valid time: {forecast_valid_time}", align="start")
+            subtitle_pane = pn.pane.Markdown(f"## Forecast reference time: {forecast_reference_time}", align="start")
             plots = make_plots_for_step(ds, step, stride=stride, variables_to_plot=variables)
 
             # model info pane
             if name == "ECMWF":
                 model_info = """
                 ### Model Information: ECMWF Artificial Intelligence Forecasting System (AIFS) deterministic model  
+                - Info: https://www.ecmwf.int/en/forecasts/datasets/set-ix
                 - Horizontal resolution: 0.25° x 0.25° lat/lon grid
-                - Forecast range: 15 days  
-                - Update frequency: 2 forecast runs per day (00/12 UTC)
+                - Forecast range: up to 15 days  
+                - Update frequency: 4 forecast runs per day (00/06/12/18)
                 """
             elif name == "MEPS":
                 model_info = """
                 ### Model Information: MEPS  
-                - Based on model data from MEPS (MetCoOp-Ensemble Prediction System) and observations
+                - Based on model data from MEPS (MetCoOp-Ensemble Prediction System)
                 - Source: Based on data from MET Norway, https://thredds.met.no/thredds/catalog/metpplatest/catalog.html
                 - Horizontal resolution: 2.5 km  
                 - Forecast range: 66 hours  

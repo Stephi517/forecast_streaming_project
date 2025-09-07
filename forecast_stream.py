@@ -44,26 +44,8 @@ def update_models():
     except Exception as e:
         print("MEPS update failed:", e)
     print("Models updated")    
-"""
-    try:
-        regional_data, last_meps_time = check_for_new_local_forecast(last_fc_time=last_meps_time,previous_dataset=regional_data)
-        
-        if regional_data is not None:
-            # Only transform if dataset has required variables
-            required_vars = ["time", "latitude","longitude"]
-            if all(var in regional_data.variables or var in regional_data.coords for var in required_vars):
-                regional_data = transform_MEPS(regional_data)
-                # Persist in memory to make plotting faster
-                #regional_data = regional_data.persist()
-                store.update(meps=regional_data)
-            else:
-                print("MEPS dataset not ready yet, skipping update")
-        else:
-            print("No new MEPS forecast, keeping previous data")
 
-    except Exception as e:
-        print("MEPS update failed:", e)
-"""        
+       
 start_time = time.time()
 update_models()
 # --- Build dashboard ---
