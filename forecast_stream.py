@@ -1,29 +1,18 @@
-import datetime
-from apscheduler.schedulers.background import BackgroundScheduler
 from ecmwf.opendata import Client
 import panel as pn
+import time
 from bokeh.core.validation import silence
 from bokeh.core.validation.warnings import FIXED_SIZING_MODE
 silence(FIXED_SIZING_MODE)
 
-import time
-from functions import *
-from visualize_forecasts import build_forecast_dashboard
+from transform_functions import *
+from update_functions import *
+from visualization import build_forecast_dashboard
 from data_store import ForecastStore
+from config import ECMWF_CONFIG, MEPS_CONFIG, UPDATE_INTERVAL_MINUTES, ZARR
 
 client = Client("ecmwf", beta=False)
-filename = "ecmwf_fc.grib2"
 
-config_args = {
-    "step": list(range(0, 168, 6)), #360
-    "stream": "oper",
-    "type": "fc",
-    "levtype": "sfc",
-    "model": "aifs-single",
-    "param": ["tp","tcc","10u","10v"],
-    "target": filename,
-}
-time1 = time.time()
 store = ForecastStore()
 global_data = None
 regional_data = None
@@ -31,10 +20,10 @@ last_meps_time = None
 
 def update_models():
     global global_data, regional_data, last_meps_time
-    print("Updating forecasts at", datetime.datetime.now())
+    print(f"Updating forecasts at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
 
     try:
-        global_data = check_for_new_global_forecast(client, config_args, global_data)
+        global_data = check_for_new_global_forecast(client, ECMWF_CONFIG, ZARR, global_data)
         if global_data is not None:
             global_data = transform_ECMWF(global_data)
             store.update(ecmwf=global_data)
@@ -43,6 +32,20 @@ def update_models():
         print("ECMWF update failed:", e)
         
     try:
+        regional_data, last_meps_time = check_for_new_local_forecast(MEPS_CONFIG,last_fc_time=last_meps_time,previous_dataset=regional_data)
+          
+        # Only transform if dataset has required variables
+        required_vars = ["time", "latitude","longitude"]
+        if regional_data is not None and all(var in regional_data.variables or var in regional_data.coords for var in required_vars):
+            regional_data = transform_MEPS(regional_data)
+            # Persist in memory to make plotting faster
+            #regional_data = regional_data.persist()
+            store.update(meps=regional_data)
+    except Exception as e:
+        print("MEPS update failed:", e)
+    print("Models updated")    
+"""
+    try:
         regional_data, last_meps_time = check_for_new_local_forecast(last_fc_time=last_meps_time,previous_dataset=regional_data)
         
         if regional_data is not None:
@@ -50,8 +53,9 @@ def update_models():
             required_vars = ["time", "latitude","longitude"]
             if all(var in regional_data.variables or var in regional_data.coords for var in required_vars):
                 regional_data = transform_MEPS(regional_data)
+                # Persist in memory to make plotting faster
+                #regional_data = regional_data.persist()
                 store.update(meps=regional_data)
-                print("MEPS update successful")
             else:
                 print("MEPS dataset not ready yet, skipping update")
         else:
@@ -59,10 +63,9 @@ def update_models():
 
     except Exception as e:
         print("MEPS update failed:", e)
-
-# Initial load
+"""        
+start_time = time.time()
 update_models()
-
 # --- Build dashboard ---
 models = {}
 if store.models.get("ECMWF") is not None:
@@ -72,11 +75,14 @@ if store.models.get("MEPS") is not None:
 
 dashboard = build_forecast_dashboard(models, dashboard_title="Forecast")
 
-time2 = time.time()
-print(time2-time1)
-dashboard.show()
+print(f"Dashboard built. Total load time: {time.time() - start_time:.1f} seconds")
 
-# --- Scheduler to update every 30 min ---
-scheduler = BackgroundScheduler()
-scheduler.add_job(update_models, "interval", minutes=30)
-scheduler.start()
+dashboard.servable()
+#dashboard.show()
+
+# --- Periodic update every x minutes using Panel ---
+def periodic_update():
+    update_models()
+
+pn.state.add_periodic_callback(periodic_update, UPDATE_INTERVAL_MINUTES * 60 * 1000)
+

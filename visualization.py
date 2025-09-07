@@ -5,8 +5,9 @@ import matplotlib.colors as mcolors
 import numpy as np
 import pandas as pd
 import cartopy.crs as ccrs
+import time 
 
-from functions import make_wind_quiver
+from transform_functions import make_wind_quiver
 
 pn.extension()
 hv.extension("bokeh")
@@ -22,7 +23,7 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
                     x=xcoord,
                     y=ycoord,
                     geo=True,
-                    coastline="10m",
+                    coastline="110m",
                     rasterize=True,
                     project=True,
                     projection=ccrs.PlateCarree(),
@@ -39,7 +40,7 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
                     x="lon",
                     y="lat",
                     geo=True,
-                    coastline="10m",
+                    coastline="110m",
                     rasterize=True,
                     project=True,
                     projection=ccrs.PlateCarree(),
@@ -50,7 +51,7 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
 
         plots_list = []
         if "cloud" in variables_to_plot:
-            plots_list.append(_plot("cloud", "Total cloud cover", "Greys", "%"))
+            plots_list.append(_plot("cloud", "Total cloud cover", "Blues", "%"))
         if "tp" in variables_to_plot:
             plots_list.append(_plot("tp", "Total precipitation", "Blues", "kg/m²"))
         if "wind" in variables_to_plot:
@@ -79,10 +80,10 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
         )
 
         if name=="ECMWF":
-            variables = ["cloud","tp","wind","wind_direction"]
+            variables = ["cloud","tp","wind","temperature"]
             stride = 30  
         else: 
-            variables = ["cloud","tp","wind","wind_direction"]
+            variables = ["cloud","tp","wind","temperature"]
             stride = 60
 
         @pn.depends(step_widget)
@@ -100,7 +101,7 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
                 ### Model Information: ECMWF Artificial Intelligence Forecasting System (AIFS) deterministic model  
                 - Horizontal resolution: 0.25° x 0.25° lat/lon grid
                 - Forecast range: 15 days  
-                - Update frequency: 4 forecast runs per day (00/06/12/18 UTC)
+                - Update frequency: 2 forecast runs per day (00/12 UTC)
                 """
             elif name == "MEPS":
                 model_info = """

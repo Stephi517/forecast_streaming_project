@@ -207,3 +207,4 @@ __pycache__/
 *.pyc
 
 *.grib2
+*.zarr
