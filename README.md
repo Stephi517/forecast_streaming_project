@@ -42,3 +42,8 @@ or
 panel serve data_pipeline.py --autoreload --show
 ```
 in environment and keep Terminal open to have the plots automatically updated
+
+python -m panel serve data_pipeline.py --show
+Don’t use --autoreload in production; only when you’re editing code.
+
+Then your scheduler will run exactly every 30 min.
