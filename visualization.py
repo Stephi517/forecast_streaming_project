@@ -14,40 +14,20 @@ hv.extension("bokeh")
 
 def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
     def make_plots_for_step(ds, step, stride, variables_to_plot):
-        xcoord = "longitude" if "longitude" in ds.coords else "lon"
-        ycoord = "latitude" if "latitude" in ds.coords else "lat"
 
         def _plot(var, title, cmap, clabel):
-            if (xcoord in ds.coords) and (ycoord in ds.coords):
-                return ds[var].sel(step=step).hvplot.quadmesh(
-                    x=xcoord,
-                    y=ycoord,
-                    geo=True,
-                    coastline="110m",
-                    rasterize=True,
-                    project=True,
-                    projection=ccrs.PlateCarree(),
-                    title=title,
-                    cmap=cmap,
-                    clabel=clabel,
-                )
-            else:
-                ds_latlon = ds.assign_coords(
-                    lon=(("y", "x"), ds["longitude"].values),
-                    lat=(("y", "x"), ds["latitude"].values),
-                )
-                return ds_latlon[var].sel(step=step).hvplot.quadmesh(
-                    x="lon",
-                    y="lat",
-                    geo=True,
-                    coastline="50m",
-                    rasterize=True,
-                    project=True,
-                    projection=ccrs.PlateCarree(),
-                    title=title,
-                    cmap=cmap,
-                    clabel=clabel,
-                )
+            return ds[var].sel(step=step).hvplot.quadmesh(
+                x="longitude",
+                y="latitude",
+                geo=True,
+                coastline="110m",
+                rasterize=True,
+                project=True,
+                projection=ccrs.PlateCarree(),
+                title=title,
+                cmap=cmap,
+                clabel=clabel,
+            )     
 
         plots_list = []
         if "cloud" in variables_to_plot:
@@ -56,7 +36,7 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
             plots_list.append(_plot("tp", "Total precipitation", "Blues", "kg/m²"))
         if "wind" in variables_to_plot:
             wind_speed_bg = _plot("ws", "Wind speed (10m)", "YlGnBu", "m/s")
-            wind_quiver = make_wind_quiver(ds, step, xcoord, ycoord, stride=stride)
+            wind_quiver = make_wind_quiver(ds, step, stride=stride)
             plots_list.append(wind_speed_bg * wind_quiver)
         if "wind_direction" in variables_to_plot:
             wind_dir = _plot("wd", "Wind direction (10m)", "twilight", "°")
@@ -81,10 +61,10 @@ def build_forecast_dashboard(models: dict, dashboard_title="Weather Forecast"):
 
         if name=="ECMWF":
             variables = ["cloud","tp","wind","temperature"]
-            stride = 30  
+            stride = 20  
         else: 
             variables = ["cloud","tp","wind","temperature"]
-            stride = 60
+            stride = 50
 
         @pn.depends(step_widget)
         def model_panel(step, ds=ds, name=name, stride=stride, variables=variables):  

@@ -208,3 +208,4 @@ __pycache__/
 
 *.grib2
 *.zarr
+*.idx
