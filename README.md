@@ -1,4 +1,4 @@
-# visualize_last_forecast
+# Visualize Forecasts
 
 This project provides a prototype of an interactive dashboard for visualizing **ECMWF** and **MEPS** weather forecasts.  
 It downloads the latest model runs, processes them and provides maps of cloud cover, precipitation, wind, and temperature in your browser.
